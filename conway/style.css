@@ -1,0 +1,30 @@
+* {
+    padding:0px;
+    margin:0px;
+}
+h1,a,p,h3 {
+    color:#FFFFFF;
+}
+a:visited {
+    color:#FFF;
+}
+body {
+    padding:20px;
+    background-color:#5070B5;
+    text-align:center;
+}
+button {
+    padding:10px;
+    margin:10px;
+}
+canvas {
+    border:1px solid #000;
+    background-color:#fff;
+}
+#left {
+    float:left;
+    max-width:400px;
+}
+#right {
+    float:right;
+}

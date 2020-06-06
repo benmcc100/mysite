@@ -1,0 +1,250 @@
+<html lang="en-US">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1, maximum-scale = 1, user-scalable = no" />
+    <meta name="apple-mobile-web-app-title" content="Ultimate Tic-Tac-Toe" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="stylesheet" href="ultimatestyle.css">
+    <script>
+        window.onload = function() {
+            //for(var i = 1; i <= 9; i++) {
+            //    var box = document.getElementById("" + i.toString());
+            //    box.style.backgroundColor = "#f" + (i*10).toString();
+            //}
+            startGame();
+        }
+
+        var playCount = 0;
+        var currentBox = "";
+        var reset = false; //indicates when someone has free reign of board
+
+        function startGame() {
+            var boxArray = document.getElementsByClassName("ultimate");
+            for(var i = 0; i < boxArray.length; i++) {
+                for(var j = 0; j < boxArray.length; j++) {
+                    boxArray[i].getElementsByTagName("td")[j].addEventListener("click", function() { addX(this) });
+                }
+            }
+        }
+
+        function addX(box) {
+            var outerBox = box.parentNode.parentNode.parentNode;
+            if(outerBox.classList.contains("current") || playCount == 0 || reset == true) {
+                if(!box.classList.contains('x') && !box.classList.contains('o')) {
+                    playCount++;
+                    var x = document.createElement('p');
+                    x.id = 'x';
+                    if(playCount % 2 === 0) {
+                        x.innerHTML = 'O';
+                        box.className += ' o';
+                    }
+                    else {
+                        x.innerHTML = 'X';
+                        box.className += ' x';
+                    }
+                    
+                    box.appendChild(x);
+                    //"old" current box goes back to unhighlighted!
+                    if(currentBox != "") {
+                        currentBox.style.border = "";
+                        currentBox.classList.remove("current");
+                    }
+                    currentBox = document.getElementById("table" + box.classList[0].toString());
+
+                    if(checkSingleBoxWinner(box)) {
+                        var winner = "";
+                        if(playCount % 2 === 0) {
+                            winner = "o"
+                        }
+                        else {
+                            winner = "x"
+                        }
+                        outerBox.classList += " won";
+                        outerBox.classList += (" " + winner);
+                        outerBox.innerHTML = 
+                        "<div class='won'><p class='won'> "+winner+" </p></div>";
+
+                        checkGameWinner(outerBox);
+                    }
+
+                    if(currentBox.classList.contains("won")) {
+                        reset = true;
+                    }
+                    else {
+                        reset = false;
+                        currentBox.classList += " current";
+                        currentBox.style.border = "3px solid #FFD470";
+                    }
+                }
+                else {
+                    alert("you can't play there.");
+                }
+            }
+            else {
+                alert("you can't play there.");
+            }
+
+        }
+        
+
+        var checkSingleBoxWinner = function (box) {
+            //check adjacent sets of boxes for same class
+            var winLines = [
+            [[1, 2], [4, 8], [3, 6]],
+            [[0, 2], [4, 7]],
+            [[0, 1], [4, 6], [5, 8]],
+            [[4, 5], [0, 6]],
+            [[3, 5], [0, 8], [2, 6], [1, 7]],
+            [[3, 4], [2, 8]],
+            [[7, 8], [2, 4], [0, 3]],
+            [[6, 8], [1, 4]],
+            [[6, 7], [0, 4], [2, 5]]
+            ];
+            var move = parseInt(box.classList[0]);
+            var outerBox = box.parentNode.parentNode.parentNode;
+            var player = "";
+            if(box.classList.contains('x')) {
+                player = 'x';
+            }
+            else {
+                player = 'o';
+            }
+
+            for(var i = 0; i < winLines[move].length; i++) {
+                var line = winLines[move][i];
+                if(outerBox.getElementsByClassName(line[0])[0].classList.contains(player) && outerBox.getElementsByClassName(line[1])[0].classList.contains(player)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkGameWinner(box) {
+            var winLines = [
+            [[1, 2], [4, 8], [3, 6]],
+            [[0, 2], [4, 7]],
+            [[0, 1], [4, 6], [5, 8]],
+            [[4, 5], [0, 6]],
+            [[3, 5], [0, 8], [2, 6], [1, 7]],
+            [[3, 4], [2, 8]],
+            [[7, 8], [2, 4], [0, 3]],
+            [[6, 8], [1, 4]],
+            [[6, 7], [0, 4], [2, 5]]
+            ];
+            var move = parseInt(box.id.substr(box.id.length - 1));
+            var player = '';
+            if(box.classList.contains('x')) {
+                player = 'x';
+            }
+            else {
+                player = 'o';
+            }
+
+            for(var i = 0; i < winLines[move].length; i++) {
+                var line = winLines[move][i];
+                if(document.getElementById("table" + line[0].toString()).classList.contains(player) && document.getElementById("table" + line[1].toString()).classList.contains(player)) {
+                    alert("wow, good job " + player +". you are win.");
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <h1 id="header">Ultimate Tic-Tac-Toe</h1>
+    <h3>X goes first. Two player.</h3>
+    <table id="ultimate1">
+        <tbody>
+            <tr>
+                <td class="ultimate">
+                    <table id="table0">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="ultimate">
+                    <table id="table1">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="ultimate">
+                    <table id="table2">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="ultimate">
+                    <table id="table3">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="ultimate">
+                    <table id="table4">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="ultimate">
+                    <table id="table5">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="ultimate">
+                    <table id="table6">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="ultimate">
+                    <table id="table7">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="ultimate">
+                    <table id="table8">
+                        <tbody>
+                            <tr><td class="0"> </td><td class="1"> </td><td class="2"> </td></tr>
+                            <tr><td class="3"> </td><td class="4"> </td><td class="5"> </td></tr>
+                            <tr><td class="6"> </td><td class="7"> </td><td class="8"> </td></tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

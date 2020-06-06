@@ -1,0 +1,193 @@
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,400,700" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $(document).on('mousedown', '#container', function (e) {
+
+                $(this).hide();
+                var BottomElement = document.elementFromPoint(e.clientX, e.clientY);
+                $(this).show();
+                $(BottomElement).mousedown();
+            
+                return false;
+            });
+            
+            $(document).ready(function (){
+                $("#linkProj").click(function (){
+                    $('html, body').animate({
+                        scrollTop: $("body").offset().top
+                    }, 1000);
+                    $("li").removeClass("active");
+                    $("#linkProj").addClass("active");
+
+                });
+                $("#linkContact").click(function (){
+                    $('html, body').animate({
+                        scrollTop: $("#contact").offset().top
+                    }, 1000);
+                    $("li").removeClass("active");
+                    $("#linkContact").addClass("active");
+                });
+                $("#linkAbout").click(function (){
+                    $('html, body').animate({
+                        scrollTop: $("#about").offset().top
+                    }, 1000);
+                    $("li").removeClass("active");
+                    $("#linkAbout").addClass("active");
+                });
+            });
+
+            function sendContact() {
+                var valid;  
+                valid = validateContact();
+                if(valid) {
+                    jQuery.ajax({
+                        url: "contact_mail.php",
+                        data:'name='+$("#name").val()+'&email='+
+                        $("#email").val()+'&message='+
+                        $(message).val(),
+                        type: "POST",
+                        success:function(data){
+                            $("#submit").html(data);
+                        },
+                        error:function (){}
+                    });
+                }
+            }
+            function validateContact() {
+                var valid = true;   
+                if(!$("#name").val()) {
+                    $("#name").attr("placeholder", "REQUIRED");
+                    valid = false;
+                }
+                if(!$("#email").val()) {
+                    $("#email").attr("placeholder", "REQUIRED");
+                    valid = false;
+                }
+                if(!$("#email").val().match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)) {
+                    $("#email").attr("placeholder", "invalid e-mail");
+                    valid = false;
+                }
+                if(!$("#message").val()) {
+                    $("#message").attr("placeholder", "REQUIRED");
+                    valid = false;
+                }
+                return valid;
+            }
+
+            function rotate() {
+                var currDeg = getRotationDegrees($("#container")) + 360;
+                console.log(currDeg);
+                $("#container").css('transform', 'rotate('+currDeg+'deg)');
+
+            }
+
+            function getRotationDegrees(obj) {
+                var matrix = obj.css("transform");
+                if(matrix !== 'none') {
+                    var values = matrix.split('(')[1].split(')')[0].split(',');
+                var a = values[0];
+                var b = values[1];
+                var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+                } 
+                else { var angle = 0; }
+                console.log(angle);
+                return angle;
+            }
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="border">
+                <div id="upperborder"></div>
+            </div>
+            <div id="welcome">
+                <h3>welcome to</h3>
+                <div id="bar"></div>
+            </div>
+            <div id="bar"></div>
+            <div id="ben">
+                <h1 class="red rainbow">BEN</h1>
+            </div>
+            <div id="mccormick">
+                <h1><span class="red rainbow">M.CC</span>ORMICK</h1>
+            </div>
+            <div id="menu">
+                <ul>
+                    <li id="linkProj" class="active"><h3>PROJECTS</h3></li>
+                    <li id="linkAbout"><h3>ABOUT ME</h3></li>
+                    <li id="linkContact"><h3>CONTACT</h3></li>
+                </ul>
+            </div>
+            <div id="main">
+                
+            </div>
+            
+            <!-- <div id="footer"><button id="spin" name="adjust" class="rainbow" onClick="rotate();">Spin</button></div> -->
+        </div>
+
+        <div id="content">
+            <div id="spacer"></div>
+            <div id="projects">
+                <h3>projects</h3>
+                <br />
+                <h4>Wrënch</h4>
+                <div class="sample">
+                    <p>I created a site for my friends' band Wrënch as a fun project in early 2018. <a href="wrench/index.html">Check out the demo here.</a>
+                    </p>
+                    <p><a href="https://www.instagram.com/wrenchtheband/">Check out Wrënch.</a></p>
+                </div>
+                <h4><a href="closetspace/index.html"><p>CLOSET<i>SPACE</i></a></h4>
+                <div class="sample">
+                    <p>CLOSET<i>SPACE</i> was a multimedia competition and exhibition which used an online submission form to collect works of art from contributers around the Chicago area. Created for my friends Mari and Emily in 2017.</p>
+                </div>
+                <h4><a href="https://oflsoccer.com">OFL Soccer</a></h4>
+                <div class="sample">
+                    <p>oflsoccer.com was an ongoing project, designed to manage and provide information for a 100+ player adult soccer league. Features of the site include a backend database of player and team performance and a team captain roster management system. Originally created in 2013, I maintained this site for several years.
+                    </p>
+                    <p>One day, I hope to package this league-management software into a customizable system for any league to use on their own website.</p>
+                </div>
+                <div id="personal">
+                    <h3>personal</h3>
+                    <ul id="personal">
+                    <li><a href="ultimate/">Play ultimate tic-tac-toe
+                    <br />
+                    <img src="img/tictactoethumb.png" width="200" height="200" /></a></li>
+                    <li><a href="conway/">Play Game of Life simulator
+                    <br />
+                    <img src="img/conwaythumb.png" width="200" height="200" /></a></li>  
+                    </ul>
+                </div>            
+            </div>
+            <div id="about">
+                <h3>about me</h3>
+                <br />
+                <p>
+                    I've been making websites from a young age:<br />
+                    <img src="img/old-min.jpg" /><br />
+                    (me in 8th grade, working on OFLsoccer.com)
+                    <br />
+                    <br />
+                    Not much has changed. I only have one monitor for my dorm room though:<br />
+                    <img src="img/new-min.jpg" /><br />
+                    (me in 14th grade, working on this website)
+                    <br />
+                    <br />
+                </p>
+
+            </div>
+            <div id="contact">
+                    <h3>contact me</h3>
+                    <br />
+                    <input type="text" id="name" name="name" class="required" minlength="2" placeholder="your name"/>
+                    <input type="text" id="email" name="email" class="required" placeholder="your e-mail" />
+                    <textarea name="message" id="message" rows="7" cols="22" class="required" placeholder="..."></textarea>
+                    <button id="submit" name="submit" class="rainbow" onClick="sendContact();">Send</button>
+            </div>
+        </div>
+    </body>
+</html>

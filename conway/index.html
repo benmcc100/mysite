@@ -1,0 +1,338 @@
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+    // Global variables to hold grid values.
+    // Might later add ability to have non-square grid.
+    var GRID_SIZE_PX = 500;
+    var BOX_SIZE = 10; // !!! MUST go evenly into grid_size_px
+    var HEIGHT = GRID_SIZE_PX / BOX_SIZE;
+    var WIDTH = HEIGHT;
+    var GRID_SIZE_BOXES = WIDTH * HEIGHT;
+    var TICK_TIME = 100; // lower this if grid is big
+
+    // livingCells
+    // this holds the living or dead state of
+    // a given cell with a 1 or a 0 in the 0th
+    // index of the array.
+    // the 1st index of the array holds the amount
+    // of neighbors a cell has. this is used to
+    // draw the different shades of cell population.
+    // the 2nd index of the array holds that cell's state
+    // on the last iteration. this is used to save time
+    // not redrawing empty cells.
+    var livingCells = new Map();
+
+    var RUNNING = false;
+    var GENERATION = 0;
+
+    // Shades for cell coloring. Right now
+    // only COLOR_3 and COLOR_2 are used
+    var COLOR_3GREATER = "#2AFF00";
+    var COLOR_3 = "#24D900";
+    var COLOR_2 = "#199900";
+    var COLOR_2LESS = "#157F00";
+
+    //A few preset patterns the user can activate.
+    var gun_coordinates = [[25, 1], [23, 2], [25, 2],
+            [13, 3], [14, 3], [21, 3], [22, 3], [35, 3], [36, 3],
+            [12, 4], [16, 4], [21, 4], [22, 4], [35, 4], [36, 4],
+            [1, 5], [2, 5], [11, 5], [17, 5], [21, 5], [22, 5],
+            [1, 6], [2, 6], [11, 6], [15, 6], [17, 6], [18, 6], [23, 6], [25, 6],
+            [11, 7], [17, 7], [25, 7],
+            [12, 8], [16, 8],
+            [13, 9], [14, 9]];
+     
+
+    // Onload function to initialize canvas element
+    // and add event listeners to the canvas.
+    window.onload = function() {
+        let canvas = document.createElement("canvas");
+        canvas.height = GRID_SIZE_PX;
+        canvas.width = GRID_SIZE_PX;
+        document.getElementById("canvas-holder").appendChild(canvas);
+        let context = canvas.getContext("2d");
+        initGrid(canvas, context);
+
+        // right click remove box
+        canvas.oncontextmenu = function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            processRightClick(context, x, y);
+            if (e.preventDefault != undefined) {
+                e.preventDefault();
+            }
+            if (e.stopPropagation != undefined) {
+                e.stopPropagation();
+            }
+        }
+
+        // left click add box
+        canvas.addEventListener('click', function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            processClick(context, x, y);
+        });
+
+        // event listeners for buttons
+        let btnRun = document.getElementById("run");
+        let btnPause = document.getElementById("pause");
+        btnRun.addEventListener('click', function() {
+            if(!RUNNING) {
+                runGame(canvas, context);
+            }
+            RUNNING = true;
+        });
+        btnPause.addEventListener('click', function() {
+            RUNNING = false;
+        });
+
+        // pattern buttons
+        let btnGun = document.getElementById("glider-gun");
+        btnGun.addEventListener('click', function() {
+            RUNNING = false;
+            initGrid(canvas, context);
+            addPattern(context, gun_coordinates);
+        });
+        let btnCross = document.getElementById("cross");
+        btnCross.addEventListener('click', function() {
+            RUNNING = false;
+            initGrid(canvas, context);
+            addCrossPattern(context);
+        });
+    }
+
+    // puts pattern on screen
+    function addPattern(context, coordinates) {
+
+        for(var i=0; i<coordinates.length; i++) {
+            var arrayVal = coordinates[i][0] + (WIDTH * coordinates[i][1]);
+
+            livingCells.set(arrayVal, [1, 0, 0]);
+            context.fillRect(coordinates[i][0] * BOX_SIZE + 1, coordinates[i][1] * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+        }
+
+    }
+
+    function addCrossPattern(context) {
+        for(var i=2; i<HEIGHT-2; i++) {
+            var xVal = Math.floor(WIDTH/2);
+            var yVal = i;
+            var arrayVal = xVal + (WIDTH * yVal);
+
+            livingCells.set(arrayVal, [1, 0, 0]);
+            context.fillRect(xVal * BOX_SIZE + 1, yVal * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+        }
+        for(var i=2; i<WIDTH-2; i++) {
+            var xVal = i;
+            var yVal = Math.floor(HEIGHT/2);
+            var arrayVal = i + (WIDTH * yVal);
+            livingCells.set(arrayVal, [1, 0, 0]);
+            context.fillRect(xVal * BOX_SIZE + 1, yVal * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+        }
+    }
+
+
+    // initGrid: draws grid lines and fills
+    // livingCells map with empty cells.
+    function initGrid(canvas, context) {
+
+        context.strokeStyle = "#aaa"; // grid color
+        context.lineWidth = 1;
+        context.fillStyle = COLOR_3; // basic fill color.
+        //drawing
+        for (var i = 0; i < canvas.width; i += BOX_SIZE) {
+            for (var j = 0; j < canvas.height; j += BOX_SIZE) {
+                context.strokeRect(i, j, BOX_SIZE, BOX_SIZE);
+                context.clearRect(i+1, j+1, BOX_SIZE-2, BOX_SIZE-2)
+            }
+        }
+
+        //initializing cell map
+        for (var i = 0; i < GRID_SIZE_BOXES; i++) {
+
+            // [0]: living/dead
+            // [1]: number of neighbors
+            // [2]: living/dead last iteration
+            livingCells.set(i, [0, 0, 0]);
+
+        }
+        
+    }
+
+    // runGame: calls tick() at an interval in milliseconds.
+    // Might later add ability to slow down and speed up game
+    // by changing this interval.
+    function runGame(canvas, context) {
+        setInterval(function() {
+            if (RUNNING) {
+                tick(context);
+            }
+        }, TICK_TIME);
+    }
+
+    // processClick: draws a cell where you click.
+    function processClick(context, x, y) {
+        var xVal = Math.floor(x / BOX_SIZE);
+        var yVal = Math.floor(y / BOX_SIZE);
+        var arrayVal = xVal + (WIDTH * yVal);
+
+        livingCells.set(arrayVal, [1, 0, 0]);
+
+        //draw actual box
+        context.fillRect(xVal * BOX_SIZE + 1, yVal * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+
+    }
+
+    // processRightClick: deletes a cell where you right click.
+    function processRightClick(context, x, y) {
+        var xVal = Math.floor(x / BOX_SIZE);
+        var yVal = Math.floor(y / BOX_SIZE);
+        var arrayVal = xVal + (WIDTH * yVal);
+
+        livingCells.set(arrayVal, [1, 0, 0]);
+
+        //clear box
+        context.clearRect(xVal * BOX_SIZE + 1, yVal * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+
+    }
+
+    // tick: Main loop of program activity. Loops through
+    // each cell, counting its neighbors. Makes sure not to
+    // check for non-existent cells outside grid borders.
+    //
+    // Uses this neighbor count to determine if cell will live,
+    // die, or spawn. Then calls draw function and increments
+    // generations variable.
+    //
+    // Does cell spawning/destruction in temporary map to
+    // process all cell actions at once -- must be concurrent for
+    // Game of Life to work.
+    function tick(context) {
+        var tempMap = new Map();
+        for (var i of livingCells.keys()) {
+            var neighbors = 0;
+
+            if (i > WIDTH) {
+                //not bottom row
+                neighbors += livingCells.get(i - WIDTH)[0];
+            }
+            if (i < (GRID_SIZE_BOXES - WIDTH)) {
+                //not top row
+                neighbors += livingCells.get(i + WIDTH)[0];
+            }
+            if (i % WIDTH != 0) {
+                //not left column
+                neighbors += livingCells.get(i - 1)[0];
+
+                if (i > WIDTH) {
+                    //not bottom row or left column
+                    neighbors += livingCells.get(i - WIDTH - 1)[0];
+
+                }
+                if (i < (GRID_SIZE_BOXES - WIDTH)) {
+                    //not top row or left column
+                    neighbors += livingCells.get(i + WIDTH - 1)[0];
+
+                }
+            }
+            if ((i + 1) % WIDTH != 0) {
+                //not right column
+                neighbors += livingCells.get(i + 1)[0];
+
+                if (i > WIDTH) {
+                    //not bottom row or right column
+                    neighbors += livingCells.get(i - WIDTH + 1)[0];
+
+                }
+                if (i < (GRID_SIZE_BOXES - WIDTH)) {
+                    //not top row or right column
+                    neighbors += livingCells.get(i + WIDTH + 1)[0];
+
+                }
+            }
+
+            ////////////////////////////////////////////////////////
+            //////////////////// Rules of Life  ////////////////////
+            ////////////////////////////////////////////////////////
+
+            // 1) Any live cell with fewer than two live neighbours dies
+            // 2) Any live cell with more than three live neighbours dies
+            // 3) Any live cell with two or three live neighbours lives, unchanged, to the next generation.
+            // 4) Any dead cell with exactly three live neighbours will come to life.
+
+            if (neighbors < 2 || neighbors > 3) {
+                tempMap.set(i, [0, neighbors]);
+            } else if (neighbors == 3) {
+                tempMap.set(i, [1, neighbors]);
+            } else {
+                tempMap.set(i, [livingCells.get(i)[0], neighbors]);
+
+            }
+        }
+
+        livingCells = tempMap;
+        drawLivingCells(context);
+        GENERATION++;
+        document.getElementById("generations").innerHTML = "Generation: " + GENERATION;
+    }
+
+    // drawLivingCells: loops through livingCells map and
+    // draws cells if they're alive, clears them if they're
+    // dead. Changes color of cell based on number of neighbors.
+    // POSSIBLE OPTIMIZATION: only 'clear' canvas of cell
+    // if that cell died recently.
+    function drawLivingCells(context) {
+        for (var i of livingCells.keys()) {
+            xVal = i % WIDTH;
+            yVal = Math.floor(i / HEIGHT);
+            cellVal = livingCells.get(i);
+            if(cellVal[0] === 0 && cellVal[2] === 0) {
+                // do nothing. empty cell.
+            }
+            else {
+                // draw cell
+                if (cellVal[1] == 3) {
+                    context.fillStyle = COLOR_3;
+                    context.fillRect(xVal * BOX_SIZE + 1, yVal * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+                } else if (cellVal[1] == 2 && cellVal[0] == 1) {
+                    context.fillStyle = COLOR_2;
+                    context.fillRect(xVal * BOX_SIZE + 1, yVal * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+                }
+                else {
+                    context.clearRect(xVal * BOX_SIZE + 1, yVal * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+                }
+            }
+
+        }
+    }
+    </script>
+</head>
+
+<body>
+    <div id="left">
+    <p align="left"> The rules of life:</p>
+    <p align="left"> 1) Any live cell with fewer than two live neighbours dies </p>
+    <p align="left"> 2) Any live cell with more than three live neighbours dies </p>
+    <p align="left"> 3) Any live cell with two or three live neighbours lives, unchanged, to the next generation </p>
+    <p align="left"> 4) Any dead cell with exactly three live neighbours will come to life </p>
+    <br />
+    <br />
+    <button id="run">Start</button>
+    <button id="pause">Pause</button>
+    <p><span id="generations">Generation: 0</span></p>
+    <button id="glider-gun">Glider Gun</button>
+    <button id="cross">Cross</button>
+    <br /> <p>Left click to place cells, right click to remove.</p>
+    </div>  
+    <div id="right">
+    <div id="canvas-holder"></div>
+    
+    </div>
+</body>
+
+</html>

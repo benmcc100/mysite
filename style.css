@@ -1,0 +1,526 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+h1,
+a,
+p,
+h3,
+h4 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: #000;
+}
+h4 {
+    font-weight: 400;
+    font-size: 1.5em;
+}
+a:visited {
+    color: #000;
+}
+a:hover {
+    color: red;
+}
+body {
+    background-color: #eee;
+    /* background-color:#ff6161;
+    background-image:url('img/gray-floral.png'); */
+}
+.red {
+    color: red;
+}
+#about img {
+    border: 1px solid black;
+    margin-left: 10px;
+}
+#adjust {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#footer #mail-status p {
+    font-size: 18px;
+    color: #fff;
+}
+/*contact form*/
+
+#contact {
+    min-height: 700px;
+}
+#contact input {
+    display: block;
+    font-size: 18px;
+    border: none;
+    padding: 2px;
+    border: 1px solid #000;
+    margin-bottom: 3px;
+    background-color: #eee;
+}
+#contact textarea {
+    display: block;
+    font-size: 18px;
+    border: none;
+    padding: 2px;
+    background-color: #eee;
+    border: 1px solid #000;
+}
+button {
+    border: 1px solid #000;
+    margin-top: 3px;
+    color: #FFF;
+    text-align: center;
+    padding: 4px 10px;
+    background-color: red;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    cursor: pointer;
+}
+.sample {
+    margin-bottom: 100px;
+}
+#personal li {
+    display: inline-block;
+    padding: 20px;
+}
+.rainbow:hover {
+    -webkit-animation: rainbow 1s infinite;
+    -ms-animation: rainbow 1s infinite;
+    -o-animation: rainbow 1s infinite;
+    animation: rainbow 1s infinite;
+}
+@-webkit-keyframes rainbow {
+    0% {
+        color: #ff0000;
+    }
+    10% {
+        color: #ff8000;
+    }
+    20% {
+        color: #ffff00;
+    }
+    30% {
+        color: #80ff00;
+    }
+    40% {
+        color: #00ff00;
+    }
+    50% {
+        color: #00ff80;
+    }
+    60% {
+        color: #00ffff;
+    }
+    70% {
+        color: #0080ff;
+    }
+    80% {
+        color: #0000ff;
+    }
+    90% {
+        color: #8000ff;
+    }
+    100% {
+        color: #ff0080;
+    }
+}
+@-ms-keyframes rainbow {
+    0% {
+        color: #ff0000;
+    }
+    10% {
+        color: #ff8000;
+    }
+    20% {
+        color: #ffff00;
+    }
+    30% {
+        color: #80ff00;
+    }
+    40% {
+        color: #00ff00;
+    }
+    50% {
+        color: #00ff80;
+    }
+    60% {
+        color: #00ffff;
+    }
+    70% {
+        color: #0080ff;
+    }
+    80% {
+        color: #0000ff;
+    }
+    90% {
+        color: #8000ff;
+    }
+    100% {
+        color: #ff0080;
+    }
+}
+@-o-keyframes rainbow {
+    0% {
+        color: #ff0000;
+    }
+    10% {
+        color: #ff8000;
+    }
+    20% {
+        color: #ffff00;
+    }
+    30% {
+        color: #80ff00;
+    }
+    40% {
+        color: #00ff00;
+    }
+    50% {
+        color: #00ff80;
+    }
+    60% {
+        color: #00ffff;
+    }
+    70% {
+        color: #0080ff;
+    }
+    80% {
+        color: #0000ff;
+    }
+    90% {
+        color: #8000ff;
+    }
+    100% {
+        color: #ff0080;
+    }
+}
+@keyframes rainbow {
+    0% {
+        color: #ff0000;
+    }
+    10% {
+        color: #ff8000;
+    }
+    20% {
+        color: #ffff00;
+    }
+    30% {
+        color: #80ff00;
+    }
+    40% {
+        color: #00ff00;
+    }
+    50% {
+        color: #00ff80;
+    }
+    60% {
+        color: #00ffff;
+    }
+    70% {
+        color: #0080ff;
+    }
+    80% {
+        color: #0000ff;
+    }
+    90% {
+        color: #8000ff;
+    }
+    100% {
+        color: #ff0080;
+    }
+}
+@media all and (min-width: 751px) {
+    #content {
+        width: 100%;
+        display: grid;
+        grid-gap: 2px;
+        grid-template-rows: 250px max-content max-content max-content;
+        grid-template-columns: min-content auto;
+        grid-template-areas: ". .""spacer projects""spacer about"". contact";
+    }
+    #content h3 {
+        font-weight: 100;
+        font-size: 2.8em;
+        padding: 20px;
+    }
+    #about {
+        grid-area: about;
+        max-width: 500px;
+        min-width: 00px;
+    }
+    #spacer {
+        grid-area: spacer;
+        width: 45vw;
+        min-width: 500px;
+    }
+    #projects {
+        grid-area: projects;
+        max-width: 700px;
+        min-width: 400px;
+    }
+    #personal li {
+        text-align: left;
+    }
+    #projects img {
+        border: 1px solid #000;
+    }
+    #contact {
+        padding-top: 50px;
+        grid-area: contact;
+        max-width: 700px;
+        min-width: 400px;
+    }
+    #container::before {
+        height: 400px;
+        top: -400px;
+        width: 1200px;
+        position: fixed;
+        background-color: #eee;
+        content: "";
+    }
+    #container {
+        position: fixed;
+        width: 1200px;
+        height: 0px;
+        margin-top: 160px;
+        margin-left: -240px;
+        display: grid;
+        grid-gap: 2px;
+        grid-template-columns: 50px max-content max-content auto auto;
+        grid-template-rows: max-content max-content max-content 0px;
+        grid-template-areas: ". border welcome welcome welcome "". ben mccormick mccormick mccormick"". menu . . .";
+        transform: rotate(-45deg);
+    }
+    #border {
+        grid-area: border;
+        position: relative;
+    }
+    #upperborder {
+        position: absolute;
+        right: 0px;
+        height: 3000px;
+        border-right: 2px solid #000;
+        top: -400px;
+    }
+    #welcome {
+        grid-area: welcome;
+        font-size: 14px;
+        justify-self: start;
+        width: 100%;
+        background-color: #000;
+        margin: -2px;
+    }
+    #welcome h3 {
+        display: inline;
+        background-color: #eee;
+        padding: 2px;
+        padding-right: 10px;
+    }
+    #ben {
+        grid-area: ben;
+        justify-self: end;
+        font-size: 24px;
+    }
+    #mccormick {
+        grid-area: mccormick;
+        font-size: 24px;
+        padding-bottom: 5px;
+    }
+    #menu {
+        grid-area: menu;
+        background-color: red;
+        padding-top: 40px;
+        min-height: 1000px;
+    }
+    li {
+        text-decoration: none;
+        list-style: none;
+        text-align: right;
+        padding: 2px;
+        margin-left: 2px;
+    }
+    li a {
+        text-decoration: none;
+    }
+    li.active {
+        background-color: #eee;
+    }
+    li.active h3 {} li.active:hover h3 {
+        color: #000;
+    }
+    li:hover {
+        cursor: pointer;
+    }
+    li:hover h3 {
+        color: #eee;
+    }
+    #main {
+        grid-area: main;
+        min-height: 1000px;
+    }
+    h1 {
+        font-weight: 700;
+        font-size: 4em;
+        line-height: 0.8em
+    }
+    span#dot {
+        font-size: 0.3em;
+    }
+    h3 {
+        font-size: 2em;
+        font-weight: 400;
+    }
+}
+
+/* short screens (like alex's laptop) */
+
+@media all and (max-height: 800px) and (min-width: 751px) {
+    #content {
+        width: 100%;
+        display: grid;
+        grid-gap: 2px;
+        grid-template-rows: 100px max-content max-content max-content;
+        grid-template-columns: min-content auto;
+        grid-template-areas: ". .""spacer projects""spacer about"". contact";
+    }
+    #about {
+        grid-area: about;
+        max-width: 500px;
+    }
+    #spacer {
+        grid-area: spacer;
+        width: 40vw;
+        min-width: 500px;
+    }
+    #projects {
+        grid-area: projects;
+        max-width: 700px;
+    }
+    #contact {
+        padding-top: 50px;
+        grid-area: contact;
+        max-width: 700px;
+    }
+    #container {
+        position: fixed;
+        width: 1000px;
+        height: 0px;
+        margin-top: 70px;
+        margin-left: -200px;
+    }
+    #border {
+        grid-area: border;
+        position: relative;
+    }
+    #upperborder {
+        position: absolute;
+        right: 0px;
+        height: 2000px;
+        border-right: 2px solid #000;
+        top: -400px;
+    }
+    #welcome {
+        grid-area: welcome;
+        font-size: 14px;
+        justify-self: start;
+        width: 100%;
+        background-color: #000;
+        margin: -2px;
+    }
+    #welcome h3 {
+        display: inline;
+        background-color: #eee;
+        padding: 2px;
+        padding-right: 10px;
+    }
+    #ben {
+        grid-area: ben;
+        justify-self: end;
+        font-size: 18px;
+    }
+    #mccormick {
+        grid-area: mccormick;
+        font-size: 18px;
+        padding-bottom: 5px;
+    }
+    #menu {
+        grid-area: menu;
+        background-color: red;
+        padding-top: 40px;
+    }
+    #main {
+        grid-area: main;
+        min-height: 1000px;
+    }
+    h1 {
+        font-weight: 700;
+        font-size: 3.8em;
+        line-height: 0.8em
+    }
+    span#dot {
+        font-size: 0.3em;
+    }
+    h3 {
+        font-size: 1.5em;
+        font-weight: 400;
+    }
+}
+
+/* phones */
+
+@media all and (max-width: 750px) {
+    h1 {
+        font-size: 1.7em;
+    }
+    h3 {
+        font-size: 1em;
+    }
+    #content {
+        width: 100%;
+        padding-left: 10px;
+        margin-top: 50px;
+    }
+    #projects {
+        margin-bottom: 50px;
+    }
+    #container {
+        display: grid;
+        width: 100%;
+        grid-template-rows: max-content max-content;
+        grid-template-columns: max-content max-content auto;
+        grid-template-areas: ". welcome bar""ben mccormick menu";
+    }
+    #welcome {
+        grid-area: welcome;
+        background-color: #000;
+    }
+    #welcome h3 {
+        background-color: #eee;
+        display: inline;
+        padding-right: 2px;
+    }
+    #bar {
+        grid-area: bar;
+        background-color: #000;
+    }
+    #ben {
+        grid-area: ben;
+    }
+    #mccormick {
+        grid-area: mccormick;
+    }
+    #menu {
+        grid-area: menu;
+    }
+    li {
+        text-decoration: none;
+        list-style: none;
+        text-align: left;
+        padding: 2px;
+    }
+    li.active h3 {} li:hover {
+        cursor: pointer;
+    }
+    li:hover h3 {
+        color: red;
+    }
+}
